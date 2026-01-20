@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { 
   Cpu, Upload, FileText, CheckCircle, Download, 
   Settings, FileBarChart, Info, Shield, Zap, Database, Layout, 
-  Facebook, Phone, RefreshCw, Lock, Brain, Globe, BookOpen
+  Facebook, Phone, RefreshCw, Lock, Brain, Globe, BookOpen, Layers
 } from 'lucide-react';
 
 export default function AI_LessonPlan_KNTT() {
@@ -25,68 +25,73 @@ export default function AI_LessonPlan_KNTT() {
     "Âm nhạc", "Mỹ thuật", "GD Thể chất", "HĐ Trải nghiệm", "GD QP&AN"
   ];
 
-  // --- KHO DỮ LIỆU NĂNG LỰC SỐ THEO TỪNG MÔN ---
+  // --- KHO DỮ LIỆU NLS: KỶ NGUYÊN MỚI (AI, VR, BIG DATA, IOT) ---
   const nlsStrategies: Record<string, any> = {
     "Toán": {
-      tool: "GeoGebra / Desmos",
-      activity1: "Sử dụng GeoGebra để mô phỏng trực quan các đồ thị, hình khối động.",
-      activity2: "Tổ chức kiểm tra nhanh (Minigame) trên Quizizz/Kahoot.",
-      competence: "Tư duy mô hình hóa toán học với công cụ số."
+      tool: "GeoGebra AI / WolframAlpha",
+      activity1: "Mô hình hóa dữ liệu thực tế (Data Modeling) bằng phần mềm toán học.",
+      activity2: "Sử dụng AI để kiểm chứng và mở rộng bài toán gốc.",
+      competence: "Tư duy dữ liệu & Mô hình hóa toán học."
     },
     "Ngữ văn": {
-      tool: "Canva / Padlet",
-      activity1: "Tra cứu tư liệu văn học trên thư viện số/Youtube chính thống.",
-      activity2: "Sáng tạo Infographic tóm tắt tác phẩm trên Canva hoặc thảo luận trên Padlet.",
-      competence: "Sáng tạo nội dung số và giao tiếp số."
+      tool: "Podcast Studio / AI Chatbot",
+      activity1: "Sáng tạo Podcast/Video ngắn để tóm tắt tác phẩm văn học.",
+      activity2: "Tranh biện (Debate) với AI để rèn luyện tư duy phản biện.",
+      competence: "Sáng tạo nội dung đa phương tiện & Tư duy phản biện số."
     },
     "Vật lí": {
-      tool: "PhET Simulation",
-      activity1: "Tiến hành thí nghiệm ảo trên PhET để quan sát hiện tượng vật lý.",
-      activity2: "Xử lý số liệu thực nghiệm bằng Excel/Google Sheets.",
-      competence: "Tìm hiểu tự nhiên dưới góc độ vật lý số."
+      tool: "Phòng thí nghiệm ảo (VR/AR)",
+      activity1: "Sử dụng kính VR/App AR để quan sát hiện tượng vật lý trong không gian 3D.",
+      activity2: "Thu thập và xử lý số liệu cảm biến trên Smartphone (Phyphox).",
+      competence: "Thực nghiệm số & Xử lý dữ liệu khoa học."
     },
     "Hóa học": {
-      tool: "PhET / ChemSketch",
-      activity1: "Mô phỏng phản ứng phân tử 3D bằng phần mềm.",
-      activity2: "Tra cứu bảng tuần hoàn tương tác online.",
-      competence: "Mô hình hóa cấu trúc chất."
+      tool: "Mô phỏng Phân tử 3D (Chem3D)",
+      activity1: "Quan sát cấu trúc phân tử thuốc/chất hóa học trong không gian 3 chiều.",
+      activity2: "Mô phỏng phản ứng nguy hiểm trong môi trường ảo an toàn.",
+      competence: "Mô hình hóa cấu trúc chất & An toàn số."
     },
     "Sinh học": {
-      tool: "Human BioDigital",
-      activity1: "Quan sát mô hình giải phẫu cơ thể/tế bào 3D.",
-      activity2: "Xây dựng sơ đồ tư duy hệ thống kiến thức trên MindMeister.",
-      competence: "Trực quan hóa sinh học."
+      tool: "Công nghệ Gen ảo / BioDigital",
+      activity1: "Giải phẫu cơ thể người/động vật trên mô hình 3D tương tác.",
+      activity2: "Mô phỏng quá trình lai tạo giống bằng phần mềm di truyền học.",
+      competence: "Nghiên cứu sự sống qua lăng kính công nghệ."
     },
     "Lịch sử": {
-      tool: "Google Earth / TimelineJS",
-      activity1: "Khám phá bản đồ lịch sử và di tích qua Google Earth.",
-      activity2: "Xây dựng trục thời gian sự kiện bằng công cụ số.",
-      competence: "Tái hiện quá khứ qua dữ liệu số."
+      tool: "Bảo tàng số (Metaverse) / Google Earth",
+      activity1: "Tham quan di tích lịch sử/chiến trường xưa qua thực tế ảo (VR Tour).",
+      activity2: "Xây dựng trục thời gian (Timeline) đa phương tiện.",
+      competence: "Tái hiện quá khứ trong không gian số."
     },
     "Địa lí": {
-      tool: "Google Maps / GIS",
-      activity1: "Phân tích bản đồ vệ tinh và số liệu dân cư.",
-      activity2: "Làm bài tập bản đồ tương tác.",
-      competence: "Tư duy không gian địa lý số."
+      tool: "GIS (Hệ thống thông tin địa lý)",
+      activity1: "Phân tích Big Data về dân cư và khí hậu trên bản đồ số.",
+      activity2: "Khám phá địa hình qua ảnh vệ tinh thời gian thực.",
+      competence: "Tư duy không gian địa lý toàn cầu."
     },
     "Tin học": {
-      tool: "Python / Scratch / Code.org",
-      activity1: "Viết chương trình mô phỏng giải quyết bài toán thực tế.",
-      activity2: "Làm việc nhóm trên nền tảng lập trình đám mây (Replit).",
-      competence: "Giải quyết vấn đề với thuật toán."
+      tool: "AI Coding (Copilot) / IoT",
+      activity1: "Lập trình điều khiển thiết bị thông minh (Smart Home).",
+      activity2: "Huấn luyện mô hình AI đơn giản (Machine Learning for Kids).",
+      competence: "Tư duy máy tính & Làm chủ công nghệ AI."
     },
     "Công nghệ": {
-      tool: "Tinkercad / AutoCAD",
-      activity1: "Thiết kế mô hình kỹ thuật 3D đơn giản.",
-      activity2: "Tra cứu tiêu chuẩn kỹ thuật trên Internet.",
-      competence: "Thiết kế kỹ thuật số."
+      tool: "Thiết kế 3D / In 3D",
+      activity1: "Thiết kế bản vẽ kỹ thuật trên CAD và mô phỏng in 3D.",
+      activity2: "Tìm hiểu về Nông nghiệp công nghệ cao (Smart Farm).",
+      competence: "Thiết kế & Chế tạo kỹ thuật số."
     },
-    // Các môn còn lại dùng cấu hình mặc định
+    "GD KT&PL": {
+      tool: "Mạng xã hội giả lập / Canva",
+      activity1: "Phân tích tình huống pháp luật qua video/tình huống trên mạng xã hội.",
+      activity2: "Thiết kế Poster tuyên truyền pháp luật trên nền tảng số.",
+      competence: "Công dân số & Trách nhiệm số."
+    },
     "default": {
-      tool: "PowerPoint / Quizizz",
-      activity1: "Trình bày ý tưởng bằng Slide đa phương tiện.",
-      activity2: "Kiểm tra kiến thức bằng trò chơi trắc nghiệm.",
-      competence: "Khai thác và sử dụng thông tin số."
+      tool: "Công cụ AI & Đám mây",
+      activity1: "Làm việc cộng tác trên nền tảng đám mây (Cloud Collaboration).",
+      activity2: "Khai thác thông tin từ các kho dữ liệu mở (Open Data).",
+      competence: "Năng lực số nền tảng cho công dân toàn cầu."
     }
   };
 
@@ -121,12 +126,8 @@ export default function AI_LessonPlan_KNTT() {
      document.body.removeChild(link);
   }
 
-  // --- XỬ LÝ NỘI DUNG ĐỘNG THÔNG MINH ---
   const handleDownloadLessonPlan = () => {
-     // 1. Lấy thông tin NLS phù hợp với môn đã chọn
      const nlsInfo = nlsStrategies[selectedSubject] || nlsStrategies["default"];
-     
-     // 2. Lấy tên bài từ file gốc
      const rawName = lessonFileName ? lessonFileName.replace('.docx', '').replace('.doc', '') : "BÀI DẠY MỚI";
      const docTitle = rawName.toUpperCase();
      const fileNameToSave = rawName + "_NLS.doc";
@@ -140,11 +141,11 @@ export default function AI_LessonPlan_KNTT() {
              <tr>
                <td style="width:50%; text-align:center;">
                   <strong>TRƯỜNG THPT LÝ NHÂN TÔNG</strong><br>
-                  <strong>TỔ CHUYÊN MÔN: ${selectedSubject.toUpperCase()}</strong>
+                  <strong>TỔ: ${selectedSubject.toUpperCase()}</strong>
                </td>
                <td style="width:50%; text-align:center;">
                   <strong>Giáo viên: Đặng Mạnh Hùng</strong><br>
-                  Ngày soạn: .../.../2025
+                  Năm học: 2025 - 2026
                </td>
              </tr>
            </table>
@@ -152,53 +153,50 @@ export default function AI_LessonPlan_KNTT() {
            <h1 style="text-align:center; color:#2E75B6; margin-top:30px;">KẾ HOẠCH BÀI DẠY</h1>
            <h2 style="text-align:center; text-transform:uppercase;">BÀI: ${docTitle}</h2>
            <p style="text-align:center;"><strong>Môn: ${selectedSubject} - ${selectedGrade}</strong></p>
-           <p style="text-align:center; font-style:italic;">(Giáo án đã được AI tích hợp Năng lực số đặc thù môn ${selectedSubject})</p>
+           <p style="text-align:center; color:#E36C09; font-weight:bold;">(Định hướng: Kỷ nguyên số & Trí tuệ nhân tạo)</p>
            <hr>
 
            <h3>I. MỤC TIÊU</h3>
-           <p><strong>1. Kiến thức:</strong> Học sinh nắm vững kiến thức trọng tâm của bài <em>"${rawName}"</em>.</p>
-           <p><strong>2. Năng lực số (Đã bổ sung):</strong></p>
+           <p><strong>1. Kiến thức:</strong> Nắm vững trọng tâm bài <em>"${rawName}"</em>.</p>
+           <p><strong>2. Năng lực số (New Era):</strong></p>
            <ul>
              <li>${nlsInfo.competence}</li>
-             <li style="color:#0070C0;"><strong>[NLS]:</strong> Sử dụng thành thạo phần mềm <strong>${nlsInfo.tool}</strong> để giải quyết vấn đề bài học.</li>
+             <li style="color:#0070C0;"><strong>[CÔNG NGHỆ MỚI]:</strong> Ứng dụng <strong>${nlsInfo.tool}</strong> để giải quyết vấn đề thực tiễn.</li>
            </ul>
 
            <h3>II. TIẾN TRÌNH DẠY HỌC</h3>
 
-           <h4 style="background-color:#E7E6E6; padding:5px;">1. HOẠT ĐỘNG 1: KHỞI ĐỘNG</h4>
-           <p><strong>a) Mục tiêu:</strong> Tạo hứng thú, dẫn dắt vào bài mới.</p>
-           <p><strong>b) Tổ chức thực hiện:</strong></p>
+           <h4 style="background-color:#E7E6E6; padding:5px;">1. HOẠT ĐỘNG KHỞI ĐỘNG</h4>
            <ul>
-              <li>GV đặt vấn đề liên quan đến bài học...</li>
+              <li>GV đặt vấn đề...</li>
               <li style="color:#0070C0; border: 1px dashed #0070C0; padding: 10px; margin: 10px 0;">
-                 <strong>[HOẠT ĐỘNG SỐ]:</strong> GV tổ chức trò chơi tương tác.<br>
-                 - Công cụ: <strong>Quizizz / Kahoot</strong>.<br>
-                 - Nhiệm vụ: HS dùng điện thoại trả lời nhanh 5 câu hỏi về chủ đề "${rawName}" để ôn lại kiến thức nền.
+                 <strong>[KHỞI ĐỘNG SỐ]:</strong> GV sử dụng <strong>Gamification (Trò chơi hóa)</strong> để kích thích tư duy.<br>
+                 - HS quét mã QR để tham gia khảo sát nhanh/trò chơi tương tác thực time.<br>
+                 - Hệ thống AI phân tích ngay biểu đồ câu trả lời của lớp để GV điều chỉnh bài giảng.
               </li>
            </ul>
 
-           <h4 style="background-color:#E7E6E6; padding:5px;">2. HOẠT ĐỘNG 2: HÌNH THÀNH KIẾN THỨC MỚI</h4>
-           <p><strong>Nội dung chính:</strong> Triển khai các đơn vị kiến thức của bài.</p>
-           <p><em>(Nội dung chuyên môn được giữ nguyên theo file gốc...)</em></p>
+           <h4 style="background-color:#E7E6E6; padding:5px;">2. HOẠT ĐỘNG HÌNH THÀNH KIẾN THỨC</h4>
+           <p><strong>Nội dung chuyên môn:</strong> (Giữ nguyên theo file gốc)</p>
            
            <div style="color:#0070C0; border: 1px solid #0070C0; padding: 15px; margin: 10px 0; background-color: #F0F8FF;">
-              <strong>[TÍCH HỢP CÔNG CỤ ${nlsInfo.tool.toUpperCase()}]:</strong><br>
-              Để học sinh hiểu sâu kiến thức, GV tổ chức hoạt động:<br>
-              - <strong>Hoạt động:</strong> ${nlsInfo.activity1}<br>
-              - <strong>Cách thức:</strong> GV chiếu mô phỏng/tư liệu lên màn hình, HS quan sát và phân tích.<br>
-              => Tác dụng: Trực quan hóa kiến thức trừu tượng, phát triển năng lực ${nlsInfo.competence}.
+              <strong>[TRẢI NGHIỆM CÔNG NGHỆ CAO - ${nlsInfo.tool.toUpperCase()}]:</strong><br>
+              Thay vì phương pháp truyền thống, GV tổ chức hoạt động:<br>
+              - <strong>Nhiệm vụ:</strong> ${nlsInfo.activity1}<br>
+              - <strong>Phương tiện:</strong> Máy tính bảng/Điện thoại thông minh/Kính VR.<br>
+              => Giúp HS tiếp cận kiến thức theo xu hướng <strong>Chuyển đổi số toàn diện</strong>.
            </div>
 
-           <h4 style="background-color:#E7E6E6; padding:5px;">3. HOẠT ĐỘNG 3: LUYỆN TẬP & VẬN DỤNG</h4>
+           <h4 style="background-color:#E7E6E6; padding:5px;">3. HOẠT ĐỘNG LUYỆN TẬP & VẬN DỤNG</h4>
            <ul>
-             <li>GV giao phiếu bài tập hoặc nhiệm vụ thực hành.</li>
-             <li style="color:#0070C0;"><strong>[NLS - THỰC HÀNH SỐ]:</strong> ${nlsInfo.activity2}</li>
-             <li style="color:#0070C0;"><strong>[NỘP BÀI]:</strong> HS nộp sản phẩm qua Padlet/Azota của lớp.</li>
+             <li>GV giao nhiệm vụ dự án nhỏ.</li>
+             <li style="color:#0070C0;"><strong>[SÁNG TẠO SỐ]:</strong> ${nlsInfo.activity2}</li>
+             <li style="color:#0070C0;"><strong>[ĐÁNH GIÁ]:</strong> Nộp sản phẩm lên <strong>Không gian học tập số (LMS)</strong>. AI hỗ trợ check đạo văn và gợi ý chấm điểm.</li>
            </ul>
 
            <br>
            <hr>
-           <p style="text-align:right;"><em>(Hệ thống NLS Assistant - Tác giả: Đặng Mạnh Hùng)</em></p>
+           <p style="text-align:right;"><em>(Hệ thống NLS Assistant @2026 - Tác giả: Đặng Mạnh Hùng)</em></p>
         </body>
         </html>
      `;
@@ -213,34 +211,39 @@ export default function AI_LessonPlan_KNTT() {
        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
        <head><meta charset='utf-8'><title>Báo cáo NLS</title></head>
        <body style="font-family: 'Times New Roman', serif; font-size: 13pt;">
-          <h1 style="text-align:center; color:#C00000;">BÁO CÁO GIẢI TRÌNH TÍCH HỢP</h1>
+          <h1 style="text-align:center; color:#C00000;">BÁO CÁO TÍCH HỢP CÔNG NGHỆ KỶ NGUYÊN MỚI</h1>
           <p><strong>Giáo viên:</strong> Đặng Mạnh Hùng</p>
           <p><strong>Môn học:</strong> ${selectedSubject}</p>
-          <p><strong>File gốc:</strong> ${lessonFileName || "Chưa xác định"}</p>
+          <p><strong>Bài dạy:</strong> ${rawName}</p>
           <hr>
-          <h3>PHÂN TÍCH ĐẶC THÙ MÔN HỌC & GIẢI PHÁP:</h3>
-          <p>Dựa trên đặc thù môn <strong>${selectedSubject}</strong>, hệ thống AI đã đề xuất chiến lược tích hợp sau:</p>
+          <h3>CHIẾN LƯỢC TÍCH HỢP (NEW ERA STRATEGY):</h3>
+          <p>Để đáp ứng yêu cầu của kỷ nguyên AI và Dữ liệu lớn, bài giảng được tích hợp các công nghệ sau:</p>
           
           <table border="1" cellpadding="5" cellspacing="0" style="border-collapse:collapse; width:100%;">
             <tr style="background-color:#FFF2CC; font-weight:bold;">
                <td>Hạng mục</td>
-               <td>Nội dung đề xuất</td>
+               <td>Công nghệ đề xuất</td>
+               <td>Mục tiêu kỷ nguyên mới</td>
             </tr>
             <tr>
-               <td>Công cụ chủ đạo</td>
+               <td>Công cụ cốt lõi</td>
                <td><strong>${nlsInfo.tool}</strong></td>
+               <td>Làm chủ công cụ số tiên tiến.</td>
             </tr>
             <tr>
-               <td>Năng lực hướng tới</td>
+               <td>Năng lực trọng tâm</td>
                <td>${nlsInfo.competence}</td>
+               <td>Phát triển tư duy công dân số toàn cầu.</td>
             </tr>
             <tr>
-               <td>Hoạt động Khám phá</td>
+               <td>Hoạt động 1</td>
                <td>${nlsInfo.activity1}</td>
+               <td>Kết nối tri thức với thực tiễn số.</td>
             </tr>
              <tr>
-               <td>Hoạt động Luyện tập</td>
+               <td>Hoạt động 2</td>
                <td>${nlsInfo.activity2}</td>
+               <td>Sáng tạo và đổi mới.</td>
             </tr>
           </table>
        </body>
@@ -252,7 +255,7 @@ export default function AI_LessonPlan_KNTT() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
       
-      {/* HEADER: CHUẨN TÁC GIẢ */}
+      {/* HEADER: ĐẶNG MẠNH HÙNG */}
       <div className="bg-blue-600 text-white py-8 shadow-lg">
          <div className="max-w-6xl mx-auto px-4 flex items-center gap-4">
             <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
@@ -394,7 +397,7 @@ export default function AI_LessonPlan_KNTT() {
                   <CheckCircle className="w-8 h-8 text-green-600" />
                   <div>
                     <h3 className="text-lg font-bold text-green-800">Thành công!</h3>
-                    <p className="text-green-700 text-sm">Đã hoàn thành tích hợp môn <strong>{selectedSubject}</strong> cho file: {lessonFileName?.replace('.docx', '')}</p>
+                    <p className="text-green-700 text-sm">Đã tạo giáo án tích hợp môn <strong>{selectedSubject}</strong> cho file: {lessonFileName?.replace('.docx', '')}</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -405,10 +408,9 @@ export default function AI_LessonPlan_KNTT() {
             )}
         </div>
 
-        {/* CỘT PHẢI: Y HỆT ẢNH MẪU */}
+        {/* CỘT PHẢI: GIAO DIỆN CHUẨN */}
         <div className="space-y-6">
            
-           {/* Hướng dẫn nhanh */}
            <div className="bg-blue-800 text-white p-6 rounded-xl shadow-md">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                  <Info size={20} /> Hướng dẫn nhanh
@@ -424,12 +426,11 @@ export default function AI_LessonPlan_KNTT() {
                  </li>
                  <li className="flex gap-3">
                     <span className="bg-blue-600 w-6 h-6 flex items-center justify-center rounded-full font-bold text-xs flex-shrink-0">3</span>
-                    <span><em>Tùy:</em> Tải file PPCT nếu muốn AI tham khảo năng lực cụ thể của trường.</span>
+                    <span><em>Tùy chọn:</em> Tải file PPCT nếu muốn AI tham khảo năng lực.</span>
                  </li>
               </ul>
            </div>
 
-           {/* Miền năng lực số (CHUẨN ẢNH) */}
            <div className="bg-white p-6 rounded-xl shadow-md border border-slate-200">
               <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                  <Zap size={20} className="text-yellow-500" /> Miền năng lực số
@@ -438,9 +439,9 @@ export default function AI_LessonPlan_KNTT() {
                  <li className="flex items-center gap-2"><Database size={16} className="text-blue-500"/> Khai thác dữ liệu và thông tin</li>
                  <li className="flex items-center gap-2"><Globe size={16} className="text-blue-500"/> Giao tiếp và Hợp tác</li>
                  <li className="flex items-center gap-2"><FileText size={16} className="text-blue-500"/> Sáng tạo nội dung số</li>
-                 <li className="flex items-center gap-2"><Lock size={16} className="text-blue-500"/> An toàn số</li>
+                 <li className="flex items-center gap-2"><Lock size={16} className="text-blue-500"/> An toàn số & Bảo mật</li>
                  <li className="flex items-center gap-2"><Brain size={16} className="text-blue-500"/> Giải quyết vấn đề</li>
-                 <li className="flex items-center gap-2"><Cpu size={16} className="text-blue-500"/> Ứng dụng AI</li>
+                 <li className="flex items-center gap-2"><Cpu size={16} className="text-blue-500"/> Ứng dụng AI & Dữ liệu</li>
               </ul>
            </div>
 
