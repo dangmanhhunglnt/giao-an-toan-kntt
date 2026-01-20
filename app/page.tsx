@@ -16,8 +16,9 @@ export default function AI_LessonPlan_KNTT() {
     }, 3000);
   };
 
-  // Hàm hỗ trợ tải file
-  const downloadFile = (content, fileName) => {
+  // Hàm hỗ trợ tải file (ĐÃ SỬA LỖI MÀU ĐỎ TẠI ĐÂY)
+  // Thêm chữ ": any" để máy tính không báo lỗi nữa
+  const downloadFile = (content: any, fileName: any) => {
      const blob = new Blob([content], { type: 'application/msword' });
      const url = URL.createObjectURL(blob);
      const link = document.createElement('a');
@@ -46,7 +47,7 @@ export default function AI_LessonPlan_KNTT() {
      downloadFile(content, "Giao_an_NLS_KNTT.doc");
   };
 
-  // 3. Tải Báo cáo (Code Mới)
+  // 3. Tải Báo cáo
   const handleDownloadReport = () => {
     const content = `
        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -121,12 +122,10 @@ export default function AI_LessonPlan_KNTT() {
                     <p className="text-green-700 text-sm mb-4">Hệ thống đã bổ sung hoạt động NLS. Thầy chọn file cần tải về:</p>
                     
                     <div className="flex gap-3 flex-wrap">
-                      {/* NÚT 1: GIÁO ÁN */}
                       <button onClick={handleDownloadLessonPlan} className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors">
                         <Download size={18} /> Tải Giáo án (.docx)
                       </button>
                       
-                      {/* NÚT 2: BÁO CÁO (ĐÃ SỬA) */}
                       <button onClick={handleDownloadReport} className="flex items-center gap-2 bg-white border border-green-600 text-green-700 hover:bg-green-50 px-5 py-2.5 rounded-lg font-medium transition-colors">
                         <FileBarChart size={18} /> Tải Báo cáo chi tiết (.docx)
                       </button>
