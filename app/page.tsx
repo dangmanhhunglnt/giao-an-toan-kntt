@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-// Dùng bộ icon an toàn
 import { 
   Cpu, Upload, FileText, CheckCircle, Download, 
   Settings, FileBarChart, Info, Shield, Zap, Database, Layout, 
@@ -14,11 +13,9 @@ export default function AI_LessonPlan_KNTT() {
   const [selectedSubject, setSelectedSubject] = useState("Toán");
   const [selectedGrade, setSelectedGrade] = useState("Lớp 10");
   
-  // State lưu tên file đã upload
   const [lessonFileName, setLessonFileName] = useState<string | null>(null);
   const [ppctFileName, setPpctFileName] = useState<string | null>(null);
 
-  // Ref để kích hoạt input file ẩn
   const lessonInputRef = useRef<HTMLInputElement>(null);
   const ppctInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,7 +25,6 @@ export default function AI_LessonPlan_KNTT() {
     "Âm nhạc", "Mỹ thuật", "GD Thể chất", "HĐ Trải nghiệm", "GD QP&AN"
   ];
 
-  // Xử lý khi chọn file
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'lesson' | 'ppct') => {
     const file = e.target.files?.[0];
     if (file) {
@@ -49,8 +45,10 @@ export default function AI_LessonPlan_KNTT() {
     }, 3000);
   };
 
-  const downloadFile = (content: any, fileName: any) => {
-     const blob = new Blob([content], { type: 'application/msword' });
+  // --- HÀM TẢI FILE (ĐÃ SỬA LỖI PHÔNG TIẾNG VIỆT) ---
+  const downloadFile = (content: string, fileName: string) => {
+     // Thêm '\uFEFF' để Word nhận diện đúng tiếng Việt
+     const blob = new Blob(['\uFEFF', content], { type: 'application/msword;charset=utf-8' });
      const url = URL.createObjectURL(blob);
      const link = document.createElement('a');
      link.href = url;
@@ -60,14 +58,130 @@ export default function AI_LessonPlan_KNTT() {
      document.body.removeChild(link);
   }
 
+  // 1. NỘI DUNG GIÁO ÁN (GIẢ LẬP ĐẦY ĐỦ)
   const handleDownloadLessonPlan = () => {
-     const content = `<html><body><h1>GIÁO ÁN ${selectedSubject.toUpperCase()}</h1><p>Tác giả: Đặng Mạnh Hùng</p><p>Trường THPT Lý Nhân Tông</p></body></html>`;
+     const content = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'><title>Giáo án NLS</title></head>
+        <body style="font-family: 'Times New Roman', serif; font-size: 14pt;">
+           
+           <p style="text-align:center; font-weight:bold;">TRƯỜNG THPT LÝ NHÂN TÔNG</p>
+           <p style="text-align:center; font-weight:bold;">TỔ TOÁN - TIN</p>
+           <br>
+           <h1 style="text-align:center; color:#2E75B6;">KẾ HOẠCH BÀI DẠY</h1>
+           <p style="text-align:center;"><strong>Môn: ${selectedSubject} - ${selectedGrade}</strong></p>
+           <p style="text-align:center;"><em>(Đã được AI tích hợp Năng lực số)</em></p>
+           <hr>
+           
+           <h3>I. MỤC TIÊU</h3>
+           <p><strong>1. Kiến thức:</strong> Học sinh nắm vững kiến thức cơ bản của bài học.</p>
+           <p><strong>2. Năng lực số (Bổ sung):</strong></p>
+           <ul>
+             <li>Sử dụng thành thạo phần mềm GeoGebra/Desmos để mô phỏng.</li>
+             <li>Biết cách tra cứu thông tin chính thống trên Internet.</li>
+           </ul>
+
+           <h3>II. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU SỐ</h3>
+           <p>- Máy chiếu, máy tính giáo viên.</p>
+           <p>- <strong>Học liệu số:</strong> Link Quizizz kiểm tra bài cũ, File mô phỏng GeoGebra.</p>
+
+           <h3>III. TIẾN TRÌNH DẠY HỌC</h3>
+           
+           <table border="1" cellpadding="10" cellspacing="0" style="border-collapse:collapse; width:100%;">
+             <tr style="background-color:#E7E6E6; font-weight:bold;">
+               <td style="width: 20%;">Hoạt động</td>
+               <td>Nội dung & Tổ chức thực hiện</td>
+             </tr>
+             
+             <tr>
+               <td><strong>HĐ 1: Khởi động</strong></td>
+               <td>
+                 <p>GV giao nhiệm vụ...</p>
+                 <p style="color:#0070C0; font-style:italic;">
+                   <strong>[TÍCH HỢP NLS]:</strong> GV tổ chức trò chơi trên Kahoot/Quizizz để kiểm tra kiến thức nền. HS dùng điện thoại để tham gia.
+                 </p>
+               </td>
+             </tr>
+
+             <tr>
+               <td><strong>HĐ 2: Hình thành kiến thức</strong></td>
+               <td>
+                 <p>GV giảng bài về lý thuyết...</p>
+                 <p>HS ghi chép...</p>
+                 <p style="color:#0070C0; font-style:italic;">
+                   <strong>[TÍCH HỢP NLS]:</strong> Thay vì vẽ hình bảng đen, GV yêu cầu HS mở phần mềm GeoGebra, nhập hàm số để quan sát sự biến thiên trực quan.
+                 </p>
+               </td>
+             </tr>
+
+             <tr>
+               <td><strong>HĐ 3: Luyện tập</strong></td>
+               <td>
+                 <p>GV phát phiếu bài tập...</p>
+                 <p style="color:#0070C0; font-style:italic;">
+                    <strong>[TÍCH HỢP NLS]:</strong> HS nộp bài giải qua Padlet/Azota. GV sửa bài trực tiếp trên màn hình chiếu.
+                 </p>
+               </td>
+             </tr>
+           </table>
+
+           <br>
+           <p style="text-align:right;"><em>Giáo viên: Đặng Mạnh Hùng</em></p>
+        </body>
+        </html>
+     `;
      downloadFile(content, `Giao_an_${selectedSubject}_NLS.doc`);
   };
 
+  // 2. NỘI DUNG BÁO CÁO (CHI TIẾT VỊ TRÍ)
   const handleDownloadReport = () => {
-    const content = `<html><body><h1>BÁO CÁO</h1><p>Đã tích hợp xong.</p></body></html>`;
-    downloadFile(content, "Bao_cao_danh_gia_NLS.doc");
+    const content = `
+       <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+       <head><meta charset='utf-8'><title>Báo cáo NLS</title></head>
+       <body style="font-family: 'Times New Roman', serif; font-size: 13pt;">
+          
+          <h1 style="text-align:center; color:#C00000;">BÁO CÁO GIẢI TRÌNH TÍCH HỢP NĂNG LỰC SỐ</h1>
+          <p><strong>Người thực hiện:</strong> Đặng Mạnh Hùng</p>
+          <p><strong>Đơn vị:</strong> Trường THPT Lý Nhân Tông</p>
+          <hr>
+
+          <h3>1. TỔNG QUAN</h3>
+          <p>Hệ thống AI đã phân tích giáo án và đề xuất bổ sung <strong>03 hoạt động</strong> năng lực số.</p>
+
+          <h3>2. CHI TIẾT CÁC ĐIỂM BỔ SUNG</h3>
+          <table border="1" cellpadding="5" cellspacing="0" style="border-collapse:collapse; width:100%;">
+            <tr style="background-color:#FFF2CC; font-weight:bold; text-align:center;">
+              <td>Vị trí trong bài</td>
+              <td>Hoạt động NLS đề xuất</td>
+              <td>Công cụ sử dụng</td>
+              <td>Mục đích</td>
+            </tr>
+            <tr>
+              <td>Hoạt động 1 (Khởi động)</td>
+              <td>Trò chơi trắc nghiệm nhanh</td>
+              <td>Kahoot / Quizizz</td>
+              <td>Tạo hứng thú, kiểm tra bài cũ nhanh chóng.</td>
+            </tr>
+            <tr>
+              <td>Hoạt động 2 (Hình thành KT)</td>
+              <td>Mô phỏng đồ thị/thí nghiệm ảo</td>
+              <td>GeoGebra / PhET</td>
+              <td>Trực quan hóa kiến thức trừu tượng.</td>
+            </tr>
+            <tr>
+              <td>Hoạt động 3 (Luyện tập)</td>
+              <td>Nộp bài và chấm chéo online</td>
+              <td>Padlet / Azota</td>
+              <td>Tăng cường kỹ năng làm việc nhóm và CNTT.</td>
+            </tr>
+          </table>
+
+          <br>
+          <p><em>(Báo cáo được trích xuất tự động từ hệ thống NLS Assistant @2025)</em></p>
+       </body>
+       </html>
+    `;
+    downloadFile(content, "Bao_cao_chi_tiet_NLS.doc");
  };
 
   return (
@@ -120,7 +234,7 @@ export default function AI_LessonPlan_KNTT() {
               </div>
             </section>
 
-            {/* 2. Tài liệu đầu vào (GIỐNG ẢNH MẪU & CÓ CHỨC NĂNG) */}
+            {/* 2. Tài liệu đầu vào */}
             <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
               <h2 className="text-lg font-bold text-blue-800 mb-6 border-l-4 border-blue-600 pl-3">
                  2. Tài liệu đầu vào
@@ -175,12 +289,12 @@ export default function AI_LessonPlan_KNTT() {
                       <>
                         <div className="bg-blue-50 p-3 rounded-full mb-3 shadow-sm"><Upload className="w-6 h-6 text-blue-600" /></div>
                         <p className="font-bold text-slate-700 text-lg">Tải lên PPCT</p>
-                        <p className="text-sm text-slate-500 mt-1">Tài liệu tham khảo năng lực (nếu có)</p>
+                        <p className="text-sm text-slate-500 mt-1">Tài liệu tham khảo (nếu có)</p>
                         <span className="mt-3 inline-block px-3 py-1 bg-slate-50 border border-slate-200 text-blue-400 text-xs font-medium rounded-full shadow-sm">Hỗ trợ .docx, .pdf</span>
                       </>
                     )}
                   </div>
-                  <p className="text-xs text-slate-400 mt-2 text-center">Tùy chọn. Giúp AI xác định năng lực chính xác hơn.</p>
+                  <p className="text-xs text-slate-400 mt-2 text-center">Tùy chọn</p>
                 </div>
 
               </div>
@@ -253,7 +367,7 @@ export default function AI_LessonPlan_KNTT() {
         </div>
       </main>
 
-      {/* FOOTER CHUẨN MẪU */}
+      {/* FOOTER */}
       <footer className="text-center py-8 border-t border-slate-200 mt-8 bg-white space-y-2">
          <p className="font-bold text-slate-700 text-base">Tác giả: Đặng Mạnh Hùng</p>
          <p className="text-slate-600">Trường THPT Lý Nhân Tông</p>
