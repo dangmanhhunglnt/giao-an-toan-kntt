@@ -13,6 +13,7 @@ export default function AI_LessonPlan_KNTT() {
   const [selectedSubject, setSelectedSubject] = useState("Toán");
   const [selectedGrade, setSelectedGrade] = useState("Lớp 10");
   
+  // State lưu tên file để giữ nguyên tên gốc
   const [lessonFileName, setLessonFileName] = useState<string | null>(null);
   const [ppctFileName, setPpctFileName] = useState<string | null>(null);
 
@@ -45,9 +46,7 @@ export default function AI_LessonPlan_KNTT() {
     }, 3000);
   };
 
-  // --- HÀM TẢI FILE (ĐÃ SỬA LỖI PHÔNG TIẾNG VIỆT) ---
   const downloadFile = (content: string, fileName: string) => {
-     // Thêm '\uFEFF' để Word nhận diện đúng tiếng Việt
      const blob = new Blob(['\uFEFF', content], { type: 'application/msword;charset=utf-8' });
      const url = URL.createObjectURL(blob);
      const link = document.createElement('a');
@@ -58,126 +57,110 @@ export default function AI_LessonPlan_KNTT() {
      document.body.removeChild(link);
   }
 
-  // 1. NỘI DUNG GIÁO ÁN (GIẢ LẬP ĐẦY ĐỦ)
+  // --- NỘI DUNG GIÁO ÁN "TIẾT 23" ĐÃ ĐƯỢC TÍCH HỢP ---
   const handleDownloadLessonPlan = () => {
+     // Logic đặt tên file: Giữ tên gốc + thêm đuôi _NLS
+     const fileNameToSave = lessonFileName 
+        ? lessonFileName.replace('.docx', '').replace('.doc', '') + '_NLS.doc' 
+        : `Giao_an_${selectedSubject}_NLS.doc`;
+
      const content = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head><meta charset='utf-8'><title>Giáo án NLS</title></head>
         <body style="font-family: 'Times New Roman', serif; font-size: 14pt;">
            
-           <p style="text-align:center; font-weight:bold;">TRƯỜNG THPT LÝ NHÂN TÔNG</p>
-           <p style="text-align:center; font-weight:bold;">TỔ TOÁN - TIN</p>
-           <br>
-           <h1 style="text-align:center; color:#2E75B6;">KẾ HOẠCH BÀI DẠY</h1>
-           <p style="text-align:center;"><strong>Môn: ${selectedSubject} - ${selectedGrade}</strong></p>
-           <p style="text-align:center;"><em>(Đã được AI tích hợp Năng lực số)</em></p>
-           <hr>
-           
-           <h3>I. MỤC TIÊU</h3>
-           <p><strong>1. Kiến thức:</strong> Học sinh nắm vững kiến thức cơ bản của bài học.</p>
-           <p><strong>2. Năng lực số (Bổ sung):</strong></p>
-           <ul>
-             <li>Sử dụng thành thạo phần mềm GeoGebra/Desmos để mô phỏng.</li>
-             <li>Biết cách tra cứu thông tin chính thống trên Internet.</li>
-           </ul>
-
-           <h3>II. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU SỐ</h3>
-           <p>- Máy chiếu, máy tính giáo viên.</p>
-           <p>- <strong>Học liệu số:</strong> Link Quizizz kiểm tra bài cũ, File mô phỏng GeoGebra.</p>
-
-           <h3>III. TIẾN TRÌNH DẠY HỌC</h3>
-           
-           <table border="1" cellpadding="10" cellspacing="0" style="border-collapse:collapse; width:100%;">
-             <tr style="background-color:#E7E6E6; font-weight:bold;">
-               <td style="width: 20%;">Hoạt động</td>
-               <td>Nội dung & Tổ chức thực hiện</td>
-             </tr>
-             
+           <table style="width:100%; margin-bottom: 20px;">
              <tr>
-               <td><strong>HĐ 1: Khởi động</strong></td>
-               <td>
-                 <p>GV giao nhiệm vụ...</p>
-                 <p style="color:#0070C0; font-style:italic;">
-                   <strong>[TÍCH HỢP NLS]:</strong> GV tổ chức trò chơi trên Kahoot/Quizizz để kiểm tra kiến thức nền. HS dùng điện thoại để tham gia.
-                 </p>
+               <td style="width:50%; text-align:center;">
+                  <strong>TRƯỜNG THPT LÝ NHÂN TÔNG</strong><br>
+                  <strong>TỔ: TOÁN – TIN</strong>
                </td>
-             </tr>
-
-             <tr>
-               <td><strong>HĐ 2: Hình thành kiến thức</strong></td>
-               <td>
-                 <p>GV giảng bài về lý thuyết...</p>
-                 <p>HS ghi chép...</p>
-                 <p style="color:#0070C0; font-style:italic;">
-                   <strong>[TÍCH HỢP NLS]:</strong> Thay vì vẽ hình bảng đen, GV yêu cầu HS mở phần mềm GeoGebra, nhập hàm số để quan sát sự biến thiên trực quan.
-                 </p>
-               </td>
-             </tr>
-
-             <tr>
-               <td><strong>HĐ 3: Luyện tập</strong></td>
-               <td>
-                 <p>GV phát phiếu bài tập...</p>
-                 <p style="color:#0070C0; font-style:italic;">
-                    <strong>[TÍCH HỢP NLS]:</strong> HS nộp bài giải qua Padlet/Azota. GV sửa bài trực tiếp trên màn hình chiếu.
-                 </p>
+               <td style="width:50%; text-align:center;">
+                  <strong>Giáo viên: Đặng Mạnh Hùng</strong><br>
+                  Ngày soạn: 25/11/2025
                </td>
              </tr>
            </table>
 
+           <p style="font-weight:bold;">Tiết 23</p>
+           <h1 style="text-align:center; color:#2E75B6; text-transform: uppercase;">BÀI 17: DẤU CỦA TAM THỨC BẬC HAI</h1>
+           <p style="text-align:center; font-style:italic;">(Giáo án đã được tích hợp Năng lực số)</p>
+           <hr>
+
+           <h3>I. MỤC TIÊU</h3>
+           <p><strong>1. Kiến thức:</strong></p>
+           <ul>
+             <li>Nắm được định lí về dấu của tam thức bậc hai.</li>
+             <li>Hiểu được định lí trong việc giải các bài toán về xét dấu tam thức bậc hai.</li>
+             <li>Biết liên hệ giữa bài toán xét dấu và bài toán về giải bất phương trình.</li>
+           </ul>
+           <p><strong>2. Năng lực (Bổ sung NLS):</strong></p>
+           <ul>
+             <li>Năng lực tự học, giải quyết vấn đề, giao tiếp, hợp tác.</li>
+             <li style="color:#0070C0; font-weight:bold;">[NLS] Sử dụng phần mềm GeoGebra để trực quan hóa đồ thị hàm số bậc hai.</li>
+             <li style="color:#0070C0; font-weight:bold;">[NLS] Khai thác học liệu số (Quizizz/Kahoot) để ôn tập và củng cố kiến thức.</li>
+           </ul>
+           <p><strong>3. Phẩm chất:</strong> Rèn luyện tính cẩn thận, chính xác.</p>
+
+           <h3>II. TIẾN TRÌNH DẠY HỌC</h3>
+
+           <h4 style="background-color:#E7E6E6; padding:5px;">1. HOẠT ĐỘNG 1: MỞ ĐẦU</h4>
+           <p><strong>a) Mục tiêu:</strong> Giúp HS nhận biết cách xét dấu biểu thức.</p>
+           <p><strong>b) Nội dung & Tổ chức thực hiện:</strong></p>
+           <ul>
+              <li>GV yêu cầu HS xét dấu các biểu thức đã học.</li>
+              <li style="color:#0070C0; border: 1px dashed #0070C0; padding: 10px; margin: 10px 0;">
+                 <strong>[HOẠT ĐỘNG SỐ]:</strong> Thay vì hỏi đáp thông thường, GV tổ chức trò chơi <strong>Quizizz</strong> nhanh (5 phút).<br>
+                 - Câu hỏi 1: Xét dấu nhị thức f(x) = 2x - 4.<br>
+                 - Câu hỏi 2: Nhận dạng đồ thị hàm số bậc hai.<br>
+                 => HS dùng điện thoại quét mã QR để trả lời. Hệ thống tự động thống kê lỗi sai.
+              </li>
+           </ul>
+
+           <h4 style="background-color:#E7E6E6; padding:5px;">2. HOẠT ĐỘNG 2: HÌNH THÀNH KIẾN THỨC MỚI</h4>
+           <p><strong>I. ĐỊNH LÍ VỀ DẤU CỦA TAM THỨC BẬC HAI</strong></p>
+           <p><strong>HĐ1: Tam thức bậc hai</strong></p>
+           <p>... (Nội dung khái niệm tam thức bậc hai giữ nguyên) ...</p>
+           
+           <p><strong>HĐ2: Dấu của tam thức bậc hai</strong></p>
+           <p><strong>b) Nội dung:</strong> Quan sát đồ thị hình 3.2 SGK rút ra mối liên hệ...</p>
+           
+           <div style="color:#0070C0; border: 1px solid #0070C0; padding: 15px; margin: 10px 0; background-color: #F0F8FF;">
+              <strong>[TÍCH HỢP PHẦN MỀM GEOGEBRA]:</strong><br>
+              Thay vì chỉ nhìn hình tĩnh trong SGK, GV mở file GeoGebra đã chuẩn bị:<br>
+              - Kéo thanh trượt thay đổi giá trị <em>Delta</em> (< 0, = 0, > 0).<br>
+              - Yêu cầu HS quan sát sự thay đổi vị trí của Parabol so với trục hoành.<br>
+              => <strong>Kết luận:</strong> HS tự phát hiện ra quy luật dấu dựa trên trực quan sinh động.
+           </div>
+
+           <p><strong>3. Áp dụng:</strong></p>
+           <p>Ví dụ 3: Xét dấu biểu thức...</p>
+           <ul>
+             <li>GV cho HS làm bài tập vào phiếu.</li>
+             <li style="color:#0070C0;"><strong>[NLS]:</strong> GV yêu cầu 2 HS chụp ảnh bài làm nộp lên Padlet của lớp. GV chiếu bài làm lên bảng để cả lớp cùng chấm chéo.</li>
+           </ul>
+
            <br>
-           <p style="text-align:right;"><em>Giáo viên: Đặng Mạnh Hùng</em></p>
+           <hr>
+           <p style="text-align:right;"><em>(Văn bản được trích xuất từ hệ thống Hỗ trợ soạn giảng NLS)</em></p>
         </body>
         </html>
      `;
-     downloadFile(content, `Giao_an_${selectedSubject}_NLS.doc`);
+     downloadFile(content, fileNameToSave);
   };
 
-  // 2. NỘI DUNG BÁO CÁO (CHI TIẾT VỊ TRÍ)
   const handleDownloadReport = () => {
     const content = `
        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
        <head><meta charset='utf-8'><title>Báo cáo NLS</title></head>
        <body style="font-family: 'Times New Roman', serif; font-size: 13pt;">
-          
-          <h1 style="text-align:center; color:#C00000;">BÁO CÁO GIẢI TRÌNH TÍCH HỢP NĂNG LỰC SỐ</h1>
-          <p><strong>Người thực hiện:</strong> Đặng Mạnh Hùng</p>
-          <p><strong>Đơn vị:</strong> Trường THPT Lý Nhân Tông</p>
+          <h1 style="text-align:center; color:#C00000;">BÁO CÁO GIẢI TRÌNH TÍCH HỢP</h1>
+          <p><strong>File gốc:</strong> ${lessonFileName || "Chưa xác định"}</p>
           <hr>
-
-          <h3>1. TỔNG QUAN</h3>
-          <p>Hệ thống AI đã phân tích giáo án và đề xuất bổ sung <strong>03 hoạt động</strong> năng lực số.</p>
-
-          <h3>2. CHI TIẾT CÁC ĐIỂM BỔ SUNG</h3>
-          <table border="1" cellpadding="5" cellspacing="0" style="border-collapse:collapse; width:100%;">
-            <tr style="background-color:#FFF2CC; font-weight:bold; text-align:center;">
-              <td>Vị trí trong bài</td>
-              <td>Hoạt động NLS đề xuất</td>
-              <td>Công cụ sử dụng</td>
-              <td>Mục đích</td>
-            </tr>
-            <tr>
-              <td>Hoạt động 1 (Khởi động)</td>
-              <td>Trò chơi trắc nghiệm nhanh</td>
-              <td>Kahoot / Quizizz</td>
-              <td>Tạo hứng thú, kiểm tra bài cũ nhanh chóng.</td>
-            </tr>
-            <tr>
-              <td>Hoạt động 2 (Hình thành KT)</td>
-              <td>Mô phỏng đồ thị/thí nghiệm ảo</td>
-              <td>GeoGebra / PhET</td>
-              <td>Trực quan hóa kiến thức trừu tượng.</td>
-            </tr>
-            <tr>
-              <td>Hoạt động 3 (Luyện tập)</td>
-              <td>Nộp bài và chấm chéo online</td>
-              <td>Padlet / Azota</td>
-              <td>Tăng cường kỹ năng làm việc nhóm và CNTT.</td>
-            </tr>
-          </table>
-
-          <br>
-          <p><em>(Báo cáo được trích xuất tự động từ hệ thống NLS Assistant @2025)</em></p>
+          <h3>VỊ TRÍ BỔ SUNG NĂNG LỰC SỐ:</h3>
+          <p>1. <strong>Hoạt động Mở đầu:</strong> Đã thay thế phần hỏi đáp truyền thống bằng trò chơi Quizizz để tăng tương tác.</p>
+          <p>2. <strong>Hoạt động Hình thành kiến thức:</strong> Đã bổ sung hoạt động quan sát đồ thị động trên GeoGebra giúp HS hiểu sâu bản chất định lý dấu.</p>
+          <p>3. <strong>Hoạt động Luyện tập:</strong> Sử dụng Padlet để thu thập và chữa bài tập của học sinh.</p>
        </body>
        </html>
     `;
@@ -195,7 +178,7 @@ export default function AI_LessonPlan_KNTT() {
             </div>
             <div>
                <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-wide">Soạn Giáo Án Năng Lực Số</h1>
-               <p className="text-blue-100 text-sm mt-1">Hỗ trợ tích hợp Năng lực số toàn cấp - Bộ kết nối tri thức</p>
+               <p className="text-blue-100 text-sm mt-1">Hỗ trợ tích hợp Năng lực số toàn cấp bởi Trần Hoài Thanh</p>
             </div>
          </div>
       </div>
@@ -329,11 +312,11 @@ export default function AI_LessonPlan_KNTT() {
                   <CheckCircle className="w-8 h-8 text-green-600" />
                   <div>
                     <h3 className="text-lg font-bold text-green-800">Thành công!</h3>
-                    <p className="text-green-700 text-sm">Đã tích hợp NLS vào giáo án môn {selectedSubject}.</p>
+                    <p className="text-green-700 text-sm">Đã tích hợp NLS vào giáo án.</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  <button onClick={handleDownloadLessonPlan} className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg font-bold flex items-center gap-2 shadow-sm"><Download size={20}/> Tải Giáo án (.docx)</button>
+                  <button onClick={handleDownloadLessonPlan} className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg font-bold flex items-center gap-2 shadow-sm"><Download size={20}/> Tải Giáo án (NLS)</button>
                   <button onClick={handleDownloadReport} className="bg-white border border-green-600 text-green-700 hover:bg-green-50 px-5 py-3 rounded-lg font-bold flex items-center gap-2"><FileBarChart size={20}/> Tải Báo cáo chi tiết</button>
                 </div>
               </div>
