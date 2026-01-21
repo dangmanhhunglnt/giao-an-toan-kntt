@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { 
   Cpu, Upload, FileText, CheckCircle, Download, 
   Settings, Info, Zap, Database, Globe, Lock, Brain, 
-  RefreshCw, ChevronDown, ChevronUp
+  Facebook, Phone, RefreshCw, ChevronDown, ChevronUp, Layers, PenTool
 } from 'lucide-react';
 
 export default function AI_LessonPlan_KNTT() {
@@ -14,9 +14,8 @@ export default function AI_LessonPlan_KNTT() {
   
   const [lessonFileName, setLessonFileName] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState("Toán");
-  const [selectedGrade, setSelectedGrade] = useState("Lớp 10");
   const [generatedHtml, setGeneratedHtml] = useState(""); 
-  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [analysisInfo, setAnalysisInfo] = useState<any>(null);
 
   const lessonInputRef = useRef<HTMLInputElement>(null);
 
@@ -26,174 +25,189 @@ export default function AI_LessonPlan_KNTT() {
   };
 
   // --------------------------------------------------------------------------------
-  // 1. BỘ NÃO PHÂN TÍCH TỪ KHÓA & CHỦ ĐỀ (QUAN TRỌNG NHẤT)
+  // 1. KHO DỮ LIỆU HOẠT ĐỘNG (Pool of Activities) - Phân theo 6 Miền
   // --------------------------------------------------------------------------------
-  const analyzeStrategy = (subject: string, fileName: string) => {
-    const name = fileName.toLowerCase();
-    
-    // Mặc định
-    let tool = "Công cụ số đa năng";
-    let action = "tra cứu thông tin";
-    let submit = "nộp bài qua Zalo/LMS";
-
-    // --- XỬ LÝ THEO TỪ KHÓA CỤ THỂ ---
-    
-    // TOÁN
-    if (subject === "Toán") {
-        if (name.includes("hàm số") || name.includes("đồ thị") || name.includes("biến thiên")) {
-            tool = "GeoGebra / Desmos";
-            action = "khảo sát sự biến thiên của đồ thị hàm số";
-            submit = "chụp ảnh đồ thị nộp Padlet";
-        } else if (name.includes("thống kê") || name.includes("xác suất")) {
-            tool = "Excel / Google Sheets";
-            action = "xử lý bảng số liệu và vẽ biểu đồ tự động";
-            submit = "nộp file Excel tính toán";
-        } else if (name.includes("hình") || name.includes("không gian")) {
-            tool = "Cabri 3D / GeoGebra 3D";
-            action = "quan sát mô hình không gian đa chiều";
-            submit = "quay video xoay hình khối";
-        }
+  const nlsActivities: Record<string, any> = {
+    "Khai thác dữ liệu": {
+        icon: "📊",
+        acts: [
+            "Truy cập kho học liệu số/Internet để tìm kiếm thông tin/hình ảnh thực tế liên quan đến bài học.",
+            "Sử dụng Google Forms để khảo sát và thu thập số liệu từ thực tế.",
+            "Tra cứu thông tin trên các trang web chính thống (Tổng cục Thống kê, WorldBank...) để đối chiếu SGK."
+        ]
+    },
+    "Giao tiếp & Hợp tác": {
+        icon: "🤝",
+        acts: [
+            "Thảo luận nhóm và chia sẻ ý kiến trên bảng tương tác trực tuyến (Padlet/Jamboard).",
+            "Sử dụng nhóm Zalo/Teams để trao đổi và phân công nhiệm vụ ngoài giờ lên lớp.",
+            "Trình bày kết quả thảo luận bằng bài trình chiếu chung (Google Slides)."
+        ]
+    },
+    "Sáng tạo nội dung số": {
+        icon: "🎨",
+        acts: [
+            "Thiết kế Infographic/Poster tóm tắt kiến thức bài học trên Canva.",
+            "Biên tập video ngắn (TikTok/CapCut) mô phỏng lại nội dung bài học.",
+            "Tạo sơ đồ tư duy (Mindmap) kỹ thuật số để hệ thống hóa kiến thức."
+        ]
+    },
+    "An toàn số": {
+        icon: "🛡️",
+        acts: [
+            "Thực hiện trích dẫn nguồn đầy đủ khi sử dụng tư liệu từ Internet.",
+            "Tuân thủ quy tắc ứng xử văn minh khi tranh luận trên không gian mạng.",
+            "Nhận diện và phòng tránh các nguồn tin giả (Fake News) liên quan đến chủ đề bài học."
+        ]
+    },
+    "Giải quyết vấn đề": {
+        icon: "🧠",
+        acts: [
+            "Sử dụng phần mềm chuyên dụng (GeoGebra/PhET/ChemSketch) để mô phỏng và giải quyết bài toán.",
+            "Sử dụng Excel/Google Sheets để xử lý tính toán phức tạp.",
+            "Lập trình (Scratch/Python) để mô phỏng thuật toán giải quyết vấn đề."
+        ]
+    },
+    "Ứng dụng AI": {
+        icon: "🤖",
+        acts: [
+            "Sử dụng Chatbot AI (ChatGPT/Gemini) để gợi ý ý tưởng hoặc giải thích khái niệm khó.",
+            "Sử dụng AI nhận diện hình ảnh (Google Lens) để tìm hiểu đối tượng thực tế.",
+            "Sử dụng các công cụ hỗ trợ học tập AI (ELSA, Photomath) để tự kiểm tra kết quả."
+        ]
     }
-    
-    // VẬT LÍ
-    else if (subject === "Vật lí") {
-        if (name.includes("điện") || name.includes("mạch")) {
-            tool = "PhET (Circuit Construction)";
-            action = "lắp ráp mạch điện ảo và đo thông số";
-            submit = "chụp ảnh mạch điện hoàn chỉnh";
-        } else if (name.includes("quang") || name.includes("kính")) {
-            tool = "PhET (Geometric Optics)";
-            action = "thay đổi tiêu cự để quan sát sự tạo ảnh";
-            submit = "vẽ ảnh tạo bởi thấu kính";
-        } else {
-            tool = "PhET Simulation";
-            action = "mô phỏng hiện tượng vật lý";
-            submit = "nộp báo cáo thí nghiệm ảo";
-        }
-    }
-
-    // HÓA HỌC
-    else if (subject === "Hóa học") {
-        if (name.includes("hữu cơ") || name.includes("cấu tạo")) {
-            tool = "ChemSketch / MolView";
-            action = "dựng mô hình phân tử 3D";
-            submit = "nộp file cấu trúc .mol";
-        } else {
-            tool = "Video thí nghiệm ảo";
-            action = "quan sát phản ứng nguy hiểm trong môi trường an toàn";
-            submit = "làm bài tường trình thí nghiệm";
-        }
-    }
-
-    // NGỮ VĂN
-    else if (subject === "Ngữ văn") {
-        tool = "Canva / Padlet";
-        action = "sáng tạo Poster/Infographic tóm tắt tác phẩm";
-        submit = "đăng tải sản phẩm lên tường ảo lớp học";
-    }
-
-    // LỊCH SỬ / ĐỊA LÍ
-    else if (subject === "Lịch sử" || subject === "Địa lí") {
-        tool = "Google Earth / Bản đồ số";
-        action = "khám phá địa danh và tái hiện không gian lịch sử/địa lý";
-        submit = "thuyết trình trên sa bàn ảo";
-    }
-
-    return { tool, action, submit };
   };
 
   // --------------------------------------------------------------------------------
-  // 2. KHO NỘI DUNG MẪU (FULL CONTENT - GIỮ NGUYÊN GỐC + CHÈN NLS)
+  // 2. BỘ NÃO CHỌN LỌC (SELECTOR ENGINE) - Quyết định miền nào phù hợp
   // --------------------------------------------------------------------------------
-  
-  // A. Bài Tiết 23 (Tam thức) - Đúng như file thầy gửi
-  const contentLesson23 = `
-    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-    <head><meta charset="utf-8"><style>body{font-family:'Times New Roman';font-size:13pt;line-height:1.3;margin:2cm;color:#000;} .red-text{color:#C00000;font-weight:bold;} .nls-box{border:1px dashed #C00000;background:#FFF5F5;padding:10px;margin:10px 0;}</style></head>
-    <body>
-       <p><b>Trường THPT Lý Nhân Tông</b> - Tổ: Toán – Tin</p>
-       <p style="text-align:right;">Giáo viên: <b>Đặng Mạnh Hùng</b></p>
-       <p>Tiết 23</p>
-       <h1>BÀI 17: DẤU CỦA TAM THỨC BẬC HAI</h1>
-       <hr>
-       <h3>I. MỤC TIÊU</h3>
-       <p>1. Kiến thức: Nắm được định lí về dấu của tam thức bậc hai.</p>
-       <p>2. Năng lực: Năng lực tự học, giải quyết vấn đề.</p>
-       <div class="nls-box"><span class="red-text">► [BỔ SUNG NLS]:</span> Sử dụng phần mềm <b>GeoGebra</b> để trực quan hóa đồ thị Parabol.</div>
-       
-       <h3>II. THIẾT BỊ DẠY HỌC</h3>
-       <p>- Máy chiếu, Bảng phụ, Phiếu học tập.</p>
-       <p class="red-text">- [NLS]: Máy tính cài GeoGebra, Link Quizizz.</p>
+  const selectDomains = (subject: string, fileName: string) => {
+    const name = fileName.toLowerCase();
+    let selectedDomains = []; // Chỉ chọn 2-3 miền phù hợp nhất
 
-       <h3>III. TIẾN TRÌNH DẠY HỌC</h3>
-       <p style="background:#ddd;font-weight:bold;padding:5px;">1. HOẠT ĐỘNG 1: MỞ ĐẦU</p>
-       <p>a) Mục tiêu: Giúp học sinh nhận biết cách xét dấu.</p>
-       <p>b) Nội dung: Xét dấu biểu thức...</p>
-       <div class="nls-box"><span class="red-text">► TÍCH HỢP CÔNG NGHỆ:</span> GV dùng <b>GeoGebra</b> chiếu đồ thị hàm số y = ax² + bx + c. Kéo thanh trượt a, b, c để HS quan sát sự đổi dấu.</div>
-       
-       <p style="background:#ddd;font-weight:bold;padding:5px;margin-top:15px;">2. HOẠT ĐỘNG 2: HÌNH THÀNH KIẾN THỨC</p>
-       <p>I. ĐỊNH LÍ VỀ DẤU CỦA TAM THỨC BẬC HAI</p>
-       <div class="nls-box"><span class="red-text">► CỦNG CỐ SỐ:</span> Trò chơi <b>Quizizz</b> (5 phút) nhận diện nhanh tam thức bậc hai.</div>
-       
-       <p style="background:#ddd;font-weight:bold;padding:5px;margin-top:15px;">3. HOẠT ĐỘNG 3: LUYỆN TẬP</p>
-       <p>Ví dụ 3: Xét dấu các biểu thức...</p>
-       <div class="nls-box"><span class="red-text">► NỘP BÀI ONLINE:</span> HS làm bài vào vở, chụp ảnh và nộp lên <b>Padlet lớp 10A1</b>. GV chọn bài sửa trực tiếp.</div>
-    </body></html>
-  `;
+    // LOGIC CHỌN MIỀN DỰA TRÊN TÊN BÀI & MÔN
+    
+    // Nhóm bài Thực hành/Luyện tập -> Ưu tiên: Giải quyết vấn đề + AI
+    if (name.includes("thực hành") || name.includes("luyện tập") || name.includes("bài tập")) {
+        selectedDomains.push("Giải quyết vấn đề");
+        selectedDomains.push("Ứng dụng AI");
+    }
+    // Nhóm bài Lý thuyết/Khám phá -> Ưu tiên: Khai thác dữ liệu + An toàn số
+    else if (name.includes("tìm hiểu") || name.includes("khái niệm") || name.includes("giới thiệu")) {
+        selectedDomains.push("Khai thác dữ liệu");
+        selectedDomains.push("An toàn số");
+    }
+    // Nhóm bài Dự án/Tổng kết -> Ưu tiên: Sáng tạo nội dung + Hợp tác
+    else if (name.includes("dự án") || name.includes("trải nghiệm") || name.includes("tổng kết")) {
+        selectedDomains.push("Sáng tạo nội dung số");
+        selectedDomains.push("Giao tiếp & Hợp tác");
+    }
+    // Mặc định cho các bài khác (Lấy ngẫu nhiên nhưng có lý)
+    else {
+        selectedDomains.push("Khai thác dữ liệu");
+        if (subject === "Toán" || subject === "Vật lí" || subject === "Hóa học" || subject === "Tin học") {
+             selectedDomains.push("Giải quyết vấn đề");
+        } else {
+             selectedDomains.push("Sáng tạo nội dung số");
+        }
+    }
 
-  // B. Bài Tiết 15 (Hàm số) - Đúng như ảnh thầy gửi (PM2.5, Tiền điện)
-  const contentLesson15 = `
-    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-    <head><meta charset="utf-8"><style>body{font-family:'Times New Roman';font-size:13pt;line-height:1.3;margin:2cm;color:#000;} .red-text{color:#C00000;font-weight:bold;} .nls-box{border:1px dashed #C00000;background:#FFF5F5;padding:10px;margin:10px 0;}</style></head>
-    <body>
-       <p><b>Trường THPT Lý Nhân Tông</b> - Tổ: Toán</p>
-       <h1>BÀI 15: HÀM SỐ</h1>
-       <h3>I. MỤC TIÊU</h3>
-       <div class="nls-box"><span class="red-text">► NĂNG LỰC SỐ:</span> Tìm kiếm dữ liệu thực tế (nồng độ bụi PM 2.5) trên Internet; Sử dụng Excel tính tiền điện.</div>
-       
-       <h3>III. TIẾN TRÌNH</h3>
-       <p style="background:#ddd;font-weight:bold;padding:5px;">HOẠT ĐỘNG 1: MỞ ĐẦU</p>
-       <p>GV yêu cầu quan sát bảng số liệu nồng độ bụi.</p>
-       <div class="nls-box"><span class="red-text">► DỮ LIỆU THỰC:</span> HS truy cập <b>AirVisual</b> tìm nồng độ bụi PM 2.5 tại địa phương hiện tại.</div>
-       
-       <p style="background:#ddd;font-weight:bold;padding:5px;margin-top:15px;">HOẠT ĐỘNG 2: HÌNH THÀNH KIẾN THỨC</p>
-       <p>Ví dụ bảng giá điện sinh hoạt.</p>
-       <div class="nls-box"><span class="red-text">► THỰC HÀNH EXCEL:</span> Nhập bảng giá điện vào <b>Google Sheets</b> và lập công thức tính tiền tự động.</div>
-       
-       <p style="background:#ddd;font-weight:bold;padding:5px;margin-top:15px;">HOẠT ĐỘNG 3: LUYỆN TẬP</p>
-       <p>Tìm tập xác định của hàm số.</p>
-       <div class="nls-box"><span class="red-text">► KIỂM TRA SỐ:</span> Dùng ứng dụng <b>Photomath</b> để kiểm tra kết quả tập xác định.</div>
-    </body></html>
-  `;
+    return selectedDomains;
+  };
 
-  // C. Bài Tự động (Cho các file lạ) - Giữ cấu trúc + Chèn NLS thông minh
-  const generateAutoContent = (fileName: string, strategy: any) => {
+  // --------------------------------------------------------------------------------
+  // 3. SINH NỘI DUNG VÀO KHUNG GỐC (INJECTION SIMULATION)
+  // --------------------------------------------------------------------------------
+  const generateLessonContent = (fileName: string, subject: string) => {
+    const topic = fileName.replace('.docx', '').replace('.doc', '').toUpperCase();
+    const domains = selectDomains(subject, fileName); // Lấy các miền đã chọn
+    
+    // Tạo nội dung HTML mô phỏng file gốc
     return `
       <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-      <head><meta charset="utf-8"><style>body{font-family:'Times New Roman';font-size:13pt;line-height:1.3;margin:2cm;} .red-text{color:#C00000;font-weight:bold;} .nls-box{border:1px dashed #C00000;background:#FFF5F5;padding:10px;margin:10px 0;}</style></head>
+      <head>
+         <meta charset="utf-8">
+         <style>
+           body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.3; margin: 2cm; color: #000; }
+           h1 { font-size: 16pt; font-weight: bold; text-align: center; color: #2E75B6; margin: 15px 0; }
+           h3 { font-size: 14pt; font-weight: bold; margin-top: 20px; background-color: #f2f2f2; padding: 5px; }
+           p, li { margin: 5px 0; text-align: justify; }
+           
+           /* STYLE CHÈN NLS */
+           .red-text { color: #C00000; font-weight: bold; }
+           .nls-box { 
+              border: 1px dashed #C00000; 
+              background-color: #FFF9F5; 
+              padding: 10px; 
+              margin: 10px 0; 
+              font-size: 13pt; 
+           }
+           .nls-badge {
+              display: inline-block;
+              background: #C00000;
+              color: white;
+              font-size: 10pt;
+              padding: 2px 8px;
+              border-radius: 4px;
+              margin-right: 5px;
+              font-weight: bold;
+              text-transform: uppercase;
+           }
+         </style>
+      </head>
       <body>
-         <p><b>Trường THPT Lý Nhân Tông</b> - Tổ: ${selectedSubject}</p>
-         <p style="text-align:right;">Giáo viên: <b>Đặng Mạnh Hùng</b></p>
-         <h1>KẾ HOẠCH BÀI DẠY: ${fileName.replace('.docx','').toUpperCase()}</h1>
+         <p><b>Trường THPT Lý Nhân Tông</b><br>Tổ: ${subject}</p>
+         <h1 style="text-align:center;">KẾ HOẠCH BÀI DẠY: ${topic}</h1>
          
          <h3>I. MỤC TIÊU</h3>
-         <p>1. Kiến thức: Nắm vững nội dung bài học.</p>
-         <div class="nls-box"><span class="red-text">► MỤC TIÊU NLS:</span> Sử dụng thành thạo <b>${strategy.tool}</b> để ${strategy.action}.</div>
-         
-         <h3>II. TIẾN TRÌNH DẠY HỌC</h3>
-         <p style="background:#ddd;font-weight:bold;padding:5px;">1. HOẠT ĐỘNG KHỞI ĐỘNG</p>
-         <div class="nls-box"><span class="red-text">► KHỞI ĐỘNG SỐ:</span> Tổ chức trò chơi trên <b>Quizizz</b> để kiểm tra kiến thức nền.</div>
-         
-         <p style="background:#ddd;font-weight:bold;padding:5px;margin-top:15px;">2. HOẠT ĐỘNG KHÁM PHÁ</p>
+         <p>1. Kiến thức: HS nắm vững kiến thức bài ${topic}.</p>
+         <p>2. Năng lực: Tự chủ, tự học, giải quyết vấn đề.</p>
          <div class="nls-box">
-            <span class="red-text">► TÍCH HỢP CÔNG NGHỆ (${strategy.tool}):</span><br>
-            - <b>Hoạt động:</b> ${strategy.action}.<br>
-            - <b>Mục đích:</b> Trực quan hóa kiến thức, giúp HS hiểu sâu bài học.
+            <span class="red-text">► MỤC TIÊU NĂNG LỰC SỐ (Tích hợp):</span>
+            <ul>
+                ${domains.map(d => `<li><b>${d}:</b> Sử dụng công cụ số để hỗ trợ hoạt động học tập tương ứng.</li>`).join('')}
+            </ul>
          </div>
+
+         <h3>II. TIẾN TRÌNH DẠY HỌC</h3>
+
+         <p style="background:#ddd; font-weight:bold; padding:5px;">1. HOẠT ĐỘNG KHỞI ĐỘNG</p>
+         <p>GV tổ chức hoạt động dẫn dắt vào bài...</p>
          
-         <p style="background:#ddd;font-weight:bold;padding:5px;margin-top:15px;">3. HOẠT ĐỘNG LUYỆN TẬP</p>
-         <div class="nls-box"><span class="red-text">► NỘP SẢN PHẨM:</span> HS thực hiện nhiệm vụ và ${strategy.submit}.</div>
-      </body></html>
+         ${domains[0] ? `
+         <div class="nls-box">
+            <span class="nls-badge">${domains[0]}</span> <span class="red-text">HOẠT ĐỘNG SỐ:</span><br>
+            ${nlsActivities[domains[0]].icon} <b>Thực hiện:</b> ${nlsActivities[domains[0]].acts[0]}<br>
+            <i>(Hoạt động này giúp HS tiếp cận bài học qua công nghệ, tăng hứng thú).</i>
+         </div>` : ''}
+
+         <p style="background:#ddd; font-weight:bold; padding:5px; margin-top:20px;">2. HOẠT ĐỘNG HÌNH THÀNH KIẾN THỨC</p>
+         <p>GV hướng dẫn HS tìm hiểu nội dung chính...</p>
+         
+         ${domains[1] ? `
+         <div class="nls-box">
+            <span class="nls-badge">${domains[1]}</span> <span class="red-text">TÍCH HỢP CÔNG NGHỆ:</span><br>
+            ${nlsActivities[domains[1]].icon} <b>Thực hiện:</b> ${nlsActivities[domains[1]].acts[0]}<br>
+            <i>(Giúp trực quan hóa kiến thức hoặc hỗ trợ làm việc nhóm hiệu quả).</i>
+         </div>` : ''}
+
+         <p style="background:#ddd; font-weight:bold; padding:5px; margin-top:20px;">3. HOẠT ĐỘNG LUYỆN TẬP & VẬN DỤNG</p>
+         <p>GV giao bài tập củng cố...</p>
+         
+         ${domains[2] ? `
+         <div class="nls-box">
+            <span class="nls-badge">${domains[2]}</span> <span class="red-text">SẢN PHẨM & ĐÁNH GIÁ SỐ:</span><br>
+            ${nlsActivities[domains[2]].icon} <b>Nhiệm vụ:</b> ${nlsActivities[domains[2]].acts[0]}<br>
+            <i>(Sản phẩm được lưu trữ và đánh giá trên môi trường số).</i>
+         </div>` : 
+         `<div class="nls-box">
+            <span class="red-text">► NỘP BÀI ONLINE:</span> HS chụp ảnh bài làm nộp qua Padlet/Azota.
+         </div>`}
+
+         <br><br>
+         <p style="text-align:right;"><em>(Giáo án được xử lý tự động theo ngữ cảnh bài học)</em></p>
+      </body>
+      </html>
     `;
   };
 
@@ -204,21 +218,12 @@ export default function AI_LessonPlan_KNTT() {
     }
     setIsProcessing(true);
     
-    // PHÂN TÍCH
-    const name = lessonFileName.toLowerCase();
-    const strategy = analyzeStrategy(selectedSubject, name);
-    setAiAnalysis({ topic: lessonFileName, tool: strategy.tool });
+    // PHÂN TÍCH & CHỌN LỌC
+    const domains = selectDomains(selectedSubject, lessonFileName);
+    setAnalysisInfo({ domains: domains });
 
-    // CHỌN NỘI DUNG
-    let content = "";
-    if (name.includes("15") || name.includes("hàm số")) {
-        content = contentLesson15;
-    } else if (name.includes("23") || name.includes("tam thức")) {
-        content = contentLesson23;
-    } else {
-        content = generateAutoContent(lessonFileName, strategy);
-    }
-
+    // SINH NỘI DUNG
+    const content = generateLessonContent(lessonFileName, selectedSubject);
     setGeneratedHtml(content);
 
     setTimeout(() => {
@@ -247,7 +252,7 @@ export default function AI_LessonPlan_KNTT() {
             <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm"><Cpu size={40} className="text-white" /></div>
             <div>
                <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-wide">SOẠN GIÁO ÁN NĂNG LỰC SỐ</h1>
-               <p className="text-blue-100 text-sm mt-1">Phiên bản 12.0: Tự động nhận diện & Lồng ghép sâu - Tác giả: Đặng Mạnh Hùng</p>
+               <p className="text-blue-100 text-sm mt-1">Phiên bản 16.0: Thích ứng ngữ cảnh (Chọn lọc NLS) - Tác giả: Đặng Mạnh Hùng</p>
             </div>
          </div>
       </div>
@@ -263,7 +268,7 @@ export default function AI_LessonPlan_KNTT() {
                       <label className="block text-sm font-semibold text-slate-700 mb-2">Môn học</label>
                       <select className="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg outline-none" 
                               value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)}>
-                        {["Toán", "Vật lí", "Hóa học", "Sinh học", "Ngữ văn", "Lịch sử", "Địa lí", "Tin học", "Tiếng Anh", "Công nghệ"].map(s => <option key={s} value={s}>{s}</option>)}
+                        {["Toán", "Vật lí", "Hóa học", "Sinh học", "Ngữ văn", "Lịch sử", "Địa lí", "Tin học", "Công nghệ", "Tiếng Anh", "GDCD"].map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
                     <div><label className="block text-sm font-semibold text-slate-700 mb-2">Khối lớp</label><select className="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg outline-none"><option>Lớp 10</option><option>Lớp 11</option><option>Lớp 12</option></select></div>
@@ -283,12 +288,23 @@ export default function AI_LessonPlan_KNTT() {
                 </section>
 
                 <button onClick={handleAnalyze} disabled={isProcessing} className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all">
-                  {isProcessing ? <><RefreshCw className="animate-spin"/> Đang phân tích ngữ cảnh...</> : <><Zap/> BẮT ĐẦU SOẠN GIÁO ÁN</>}
+                  {isProcessing ? <><RefreshCw className="animate-spin"/> Đang chọn lọc miền NLS...</> : <><Zap/> BẮT ĐẦU SOẠN GIÁO ÁN</>}
                 </button>
             </div>
 
             <div className="space-y-6">
-               <div className="bg-blue-800 text-white p-6 rounded-xl shadow-md"><h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Info size={20}/> Cơ chế AI</h3><p className="text-sm opacity-90">Hệ thống sẽ đọc tên bài dạy và tự động đề xuất công cụ NLS tương ứng (Ví dụ: Bài "Điện" sẽ gợi ý PhET, bài "Văn" gợi ý Canva).</p></div>
+               <div className="bg-blue-800 text-white p-6 rounded-xl shadow-md">
+                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Layers size={20}/> 6 Miền Năng lực số</h3>
+                  <p className="text-sm opacity-90 mb-4">Hệ thống sẽ tự động chọn 2-3 miền phù hợp nhất cho bài dạy:</p>
+                  <ul className="text-xs space-y-1 text-blue-100">
+                     <li>1. Khai thác dữ liệu & thông tin</li>
+                     <li>2. Giao tiếp & Hợp tác</li>
+                     <li>3. Sáng tạo nội dung số</li>
+                     <li>4. An toàn số</li>
+                     <li>5. Giải quyết vấn đề</li>
+                     <li>6. Ứng dụng AI</li>
+                  </ul>
+               </div>
             </div>
           </div>
         ) : (
@@ -297,7 +313,14 @@ export default function AI_LessonPlan_KNTT() {
                 <div className="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
                 <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce-short"><CheckCircle className="w-10 h-10 text-green-600" /></div>
                 <h2 className="text-3xl font-bold text-blue-900 mb-2">Phân tích thành công!</h2>
-                <div className="text-slate-600 text-lg mb-6"><p>Chủ đề: <strong>{aiAnalysis?.topic}</strong></p><p>Công cụ đề xuất: <strong className="text-blue-600">{aiAnalysis?.tool}</strong></p></div>
+                <div className="text-slate-600 text-lg mb-6">
+                    <p>Đã chọn lọc các miền NLS phù hợp:</p>
+                    <div className="flex justify-center gap-2 mt-2 flex-wrap">
+                        {analysisInfo?.domains.map((d:string, i:number) => (
+                            <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold border border-blue-200">{d}</span>
+                        ))}
+                    </div>
+                </div>
                 <div className="flex justify-center gap-4">
                     <button onClick={downloadFile} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold text-lg flex items-center gap-2 shadow-lg hover:-translate-y-1 transition-all"><Download size={24}/> Tải về .docx</button>
                     <button onClick={() => setShowPreview(!showPreview)} className="bg-white border-2 border-slate-200 text-blue-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50 transition-all">{showPreview ? <ChevronUp size={20}/> : <ChevronDown size={20}/>} {showPreview ? "Thu gọn" : "Xem trước"}</button>
